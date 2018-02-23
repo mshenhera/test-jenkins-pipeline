@@ -11,7 +11,6 @@ node {
            doGenerateSubmoduleConfigurations: false,
            extensions: [
                [$class: 'CleanBeforeCheckout'],
-               [$class: 'DisableRemotePoll'],
                [$class: 'PathRestriction', excludedRegions: '', includedRegions: 'frontend/.*']],
                submoduleCfg: [],
                userRemoteConfigs: [[credentialsId: 'mykola-github-key', url: "git@github.com:mshenhera/test-jenkins-pipeline.git"]]
