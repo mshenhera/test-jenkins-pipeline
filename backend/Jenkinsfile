@@ -11,14 +11,13 @@ node {
            doGenerateSubmoduleConfigurations: false,
            extensions: [
                [$class: 'CleanBeforeCheckout'],
-               [$class: 'DisableRemotePoll'],
                [$class: 'PathRestriction', excludedRegions: '', includedRegions: 'backend/.*']],
                submoduleCfg: [],
                userRemoteConfigs: [[credentialsId: 'mykola-github-key', url: "git@github.com:mshenhera/test-jenkins-pipeline.git"]]
        ])
     }
 
-    stage('Get Source') {
+    stage('Echo') {
         echo "Run backend"
     }
 }
