@@ -1,3 +1,31 @@
+def abortBuildIfTriggeredByRestrictedPath() {
+    def changeLogSets = currentBuild.changeSets
+    def validChangeDetected = false
+    outerloop:
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length; j++) {
+            def entry = entries[j]
+            echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+            def files = new ArrayList(entry.affectedFiles)
+            for (int k = 0; k < files.size(); k++) {
+                def file = files[k]
+                if(file.path.startsWith("backend/")){
+                    validChangeDetected = true
+                    println "[INFO] Found commit to the file: ${file.path} (file operations: ${file.editType.name})"
+                    break outerloop
+                }
+            }
+        }
+    }
+
+    // We are building if there are some walid changes or if there are no changes(so the build was triggered intentionally or it is the first run.)
+    if(!validChangeDetected && changeLogSets.size() != 0) {
+        currentBuild.result = 'NOT_BUILT'
+        error("Stopping to prevent not needed build. No changes to backend folder")
+    }
+}
+
 node {
     properties([
         pipelineTriggers([pollSCM('H/2 * * * *')]),
@@ -21,19 +49,7 @@ node {
                userRemoteConfigs: [[credentialsId: 'mykola-github-key', url: "git@github.com:mshenhera/test-jenkins-pipeline.git"]]
        ])
 
-      def changeLogSets = currentBuild.changeSets
-      for (int i = 0; i < changeLogSets.size(); i++) {
-          def entries = changeLogSets[i].items
-          for (int j = 0; j < entries.length; j++) {
-              def entry = entries[j]
-              echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
-              def files = new ArrayList(entry.affectedFiles)
-              for (int k = 0; k < files.size(); k++) {
-                  def file = files[k]
-                  echo "  ${file.editType.name} ${file.path}"
-              }
-          }
-      }
+       abortBuildIfTriggeredByRestrictedPath
     }
 
     stage('2') {
