@@ -10,7 +10,6 @@ node {
 
     stage('Get Source') {
         checkout([
-           poll: false,
            $class: 'GitSCM',
            branches: [[name: '*/master']],
            doGenerateSubmoduleConfigurations: false,
