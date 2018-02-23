@@ -24,6 +24,12 @@ def abortBuildIfTriggeredByRestrictedPath() {
         currentBuild.result = 'NOT_BUILT'
         error("Stopping to prevent not needed build. No changes to backend folder")
     }
+
+    // We are building if there no any changes.
+    // Looks like manual run from UI
+    if(changeLogSets.size() == 0) {
+        println "[INFO] No changes found. Continue the buid"
+    }
 }
 
 node {
@@ -49,7 +55,7 @@ node {
                userRemoteConfigs: [[credentialsId: 'mykola-github-key', url: "git@github.com:mshenhera/test-jenkins-pipeline.git"]]
        ])
 
-       abortBuildIfTriggeredByRestrictedPath
+       abortBuildIfTriggeredByRestrictedPath()
     }
 
     stage('2') {
