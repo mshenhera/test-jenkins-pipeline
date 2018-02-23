@@ -4,6 +4,10 @@ node {
         disableConcurrentBuilds()
     ])
 
+    stage('1') {
+        echo "Run before get source"
+    }
+
     stage('Get Source') {
         checkout([
            $class: 'GitSCM',
@@ -18,7 +22,7 @@ node {
        ])
     }
 
-    stage('Echo') {
-        echo "Run backend"
+    stage('2') {
+        echo "Run after get source"
     }
 }
