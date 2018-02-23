@@ -10,6 +10,7 @@ node {
            branches: [[name: '*/master']],
            doGenerateSubmoduleConfigurations: false,
            extensions: [
+               [$class: 'DisableRemotePoll'],
                [$class: 'CleanBeforeCheckout'],
                [$class: 'PathRestriction', excludedRegions: '', includedRegions: 'backend/.*']],
                submoduleCfg: [],
