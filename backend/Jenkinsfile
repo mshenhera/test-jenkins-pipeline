@@ -1,0 +1,24 @@
+node {
+    properties([
+        pipelineTriggers([pollSCM('H/2 * * * *')]),
+        disableConcurrentBuilds()
+    ])
+
+    stage('Get Source') {
+        checkout([
+           $class: 'GitSCM',
+           branches: [[name: '*/master']],
+           doGenerateSubmoduleConfigurations: false,
+           extensions: [
+               [$class: 'CleanBeforeCheckout'],
+               [$class: 'DisableRemotePoll'],
+               [$class: 'PathRestriction', excludedRegions: '', includedRegions: 'backend/.*']],
+               submoduleCfg: [],
+               userRemoteConfigs: [[credentialsId: 'mykola-github-key', url: "git@github.com:mshenhera/test-jenkins-pipeline.git"]]
+       ])
+    }
+
+    stage('Get Source') {
+        echo "Run backend"
+    }
+}
